@@ -7,6 +7,7 @@ on:
 
 jobs:
   build:
+    # 方案二：如果方案一失败，可以尝试将这里改为 windows-2019
     runs-on: windows-latest
 
     steps:
@@ -18,15 +19,16 @@ jobs:
     - name: Setup NuGet
       uses: NuGet/setup-nuget@v1.2.0
 
-    # 核心修复：安装 .NET Framework 4.0 Developer Pack
-    - name: Install .NET Framework 4.0 Developer Pack
-      run: choco install netfx-4.0-devpack -y
+    # 核心修复：通过 NuGet 获取 .NET 4.0 引用程序集
+    - name: Install .NET Framework 4.0 Reference Assemblies via NuGet
+      run: nuget install Microsoft.NETFramework.ReferenceAssemblies.net40 -Version 1.0.3 -OutputDirectory packages
 
     - name: Restore NuGet packages
       run: nuget restore SNETCracker.sln
 
     - name: Build Solution
-      run: msbuild SNETCracker.sln /p:Configuration=Release /p:Platform="Any CPU"
+      # 关键：通过 TargetFrameworkRootPath 告诉 MSBuild 去哪里找引用程序集
+      run: msbuild SNETCracker.sln /p:Configuration=Release /p:Platform="Any CPU" /p:TargetFrameworkRootPath=packages\Microsoft.NETFramework.ReferenceAssemblies.net40\build\
 
     - name: Upload Artifact
       uses: actions/upload-artifact@v4
