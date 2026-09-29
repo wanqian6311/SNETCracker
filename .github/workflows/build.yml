@@ -10,30 +10,24 @@ jobs:
     runs-on: windows-latest
 
     steps:
-    # 1. 检出代码（已更新到 v5，解决 Node.js 20 警告）
-    - uses: actions/checkout@v5
+    - uses: actions/checkout@v4
 
-    # 2. 设置 MSBuild
     - name: Setup MSBuild
       uses: microsoft/setup-msbuild@v2
 
-    # 3. 设置 NuGet
     - name: Setup NuGet
-      uses: NuGet/setup-nuget@v2
+      uses: NuGet/setup-nuget@v1.2.0
 
-    # 4. 安装 .NET Framework 引用程序集（解决 MSB3644 错误）
-    - name: Add .NET Framework Reference Assemblies
-      run: nuget install Microsoft.NETFramework.ReferenceAssemblies -Version 1.0.3 -OutputDirectory packages
+    # 核心修复：安装 .NET Framework 4.0 Developer Pack
+    - name: Install .NET Framework 4.0 Developer Pack
+      run: choco install netfx-4.0-devpack -y
 
-    # 5. 还原 NuGet 包（明确指定解决方案文件）
     - name: Restore NuGet packages
       run: nuget restore SNETCracker.sln
 
-    # 6. 构建解决方案（启用详细日志，便于排查问题）
     - name: Build Solution
-      run: msbuild SNETCracker.sln /p:Configuration=Release /p:Platform="Any CPU" /verbosity:detailed
+      run: msbuild SNETCracker.sln /p:Configuration=Release /p:Platform="Any CPU"
 
-    # 7. 上传构建产物
     - name: Upload Artifact
       uses: actions/upload-artifact@v4
       with:
