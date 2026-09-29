@@ -6,7 +6,7 @@ using System.Runtime.InteropServices;
 // 控制。更改这些特性值可修改
 // 与程序集关联的信息。
 [assembly: AssemblyTitle("SNETCracker")]
-[assembly: AssemblyDescription("by shack2")]
+[assembly: AssemblyDescription("by shack2 2026年9月29日")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
 [assembly: AssemblyProduct("SNETCracker")]
