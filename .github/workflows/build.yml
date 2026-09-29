@@ -1,0 +1,31 @@
+name: Build SNETCracker
+
+on:
+  push:
+    branches: [ "master" ]
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: windows-latest
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Setup MSBuild
+      uses: microsoft/setup-msbuild@v2
+
+    - name: Setup NuGet
+      uses: NuGet/setup-nuget@v1.2.0
+
+    - name: Restore NuGet packages
+      run: nuget restore SNETCracker.sln
+
+    - name: Build Solution
+      run: msbuild SNETCracker.sln /p:Configuration=Release
+
+    - name: Upload Artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: SNETCracker-Release
+        path: SNETCracker\bin\Release\
